@@ -24,14 +24,22 @@ public class Logic {
     public boolean move(Cell source, Cell dest) {
         boolean rst = false;
         int index = this.findBy(source);
-        if (index != -1) {
-            Cell[] steps = this.figures[index].way(source, dest);
-            if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
-                rst = true;
-                this.figures[index] = this.figures[index].copy(dest);
+        int end = this.findBy(dest);
+        try {
+            if (index != -1 && end == -1) {
+                Cell[] steps = this.figures[index].way(source, dest);
+                if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
+                    rst = true;
+                    this.figures[index] = this.figures[index].copy(dest);
+                }
             }
-        }
-        return rst;
+            if (index != -1 && end != -1){
+                throw new IllegalStateException(
+                        String.format("Could not move from %s to %s", source, dest));
+            }
+        } catch (IllegalStateException e) {
+            System.out.println(e);
+        } return rst;
     }
 
     public void clean() {

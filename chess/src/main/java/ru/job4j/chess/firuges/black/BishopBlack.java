@@ -23,36 +23,44 @@ public class BishopBlack implements Figure {
 
     @Override
     public Cell[] way(Cell source, Cell dest) {
-      int size = Math.abs(source.x - dest.x);
+        try {
+            if (!isDiagonal(source, dest)) {
+                throw new IllegalStateException(
+                        String.format("Could not move by diagonal from %s to %s", source, dest));
+            }
+        }catch (IllegalStateException e) {
+            System.out.println(e);
+    }
+        int size = Math.abs(source.x - dest.x);
         Cell[] steps = new Cell[size];
         int x = source.getX();
         int y = source.getY();
-        try {
+        int deltaX = source.x < dest.x ? 1 : -1;
+        int deltaY = source.y < dest.y ? 1 : -1;
             for (int index = 0; index < size; index++) {
-                int deltaX = source.x < dest.x ? x++ : x--;
-                int deltaY = source.y < dest.y ? y++ : y--;
-                if (source.x == dest.x) {
-                    x = source.x;
+                if (deltaX == 1) {
+                    x++;
+                } else {
+                    x--;
                 }
-                if (source.y == dest.y) {
-                    y = source.y;
+                if (deltaY == 1) {
+                    y++;
+                } else {
+                    y--;
                 }
                 steps[index] = Cell.values()[x * 8 + y];
-                if (source.x == x) {
-                    throw new IllegalStateException();
-                } else if (source.y == y) {
-                    throw new IllegalStateException();
                 }
-            }
-        } catch (IllegalStateException e) {
-            System.out.println(String.format("Could not move by diagonal from %s to %s", source, dest));
-        }
         return steps;
-    }
+        }
+
 
     public boolean isDiagonal(Cell source, Cell dest) {
-
-        return false;
+        if (source.x == dest.x) {
+            return false;
+        } else if (source.y == dest.y) {
+            return false;
+        }
+        return true;
     }
 
     @Override
